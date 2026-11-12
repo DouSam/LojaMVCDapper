@@ -122,7 +122,7 @@ LojaMvcDapper/
 
 ## 💡 6. Dicas para o Projeto Integrador (P2)
 Para o projeto oficial da sua equipe, adapte esta arquitetura para o tema escolhido:
-1. **Modelos:** Crie suas 3 ou mais entidades com relacionamentos (1:N ou N:N) dentro da pasta `Models/`.
+1. **Modelos:** Crie suas 4 ou mais entidades com relacionamentos (1:N ou N:N) dentro da pasta `Models/`.
 2. **Repositórios:** Cada entidade de domínio deve ter sua interface em `Repositories/Interfaces/` e sua classe Dapper em `Repositories/Dapper/`.
 3. **Injeção de Dependência:** Registre cada repositório no `Program.cs` usando `builder.Services.AddScoped<I...Repository, ...Repository>()`.
 4. **Controllers e Views:** Crie um Controller para cada entidade e sua respectiva subpasta dentro de `Views/`.
