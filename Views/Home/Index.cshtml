@@ -1,0 +1,112 @@
+﻿@model IEnumerable<LojaMvcDapper.Models.Produto>
+
+@{
+    ViewData["Title"] = "Dashboard da Loja";
+}
+
+<!-- =========================================================================
+     DASHBOARD INICIAL (HOME)
+     Exibe cards de métricas em tempo real vindas do Dapper
+     ========================================================================= -->
+
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm border">
+    <div class="container-fluid py-2">
+        <h1 class="display-6 fw-bold text-dark">🚀 TechStore - Painel de Controle</h1>
+        <p class="col-md-10 fs-5 text-muted">
+            Projeto de referência desenvolvido para a disciplina de <strong>Programação Orientada a Objetos (ILP007)</strong> na FATEC Ribeirão Preto.
+            Apresenta a stack completa em <strong>ASP.NET Core MVC</strong>, persistência relacional com <strong>SQLite</strong> e o micro-ORM <strong>Dapper</strong>.
+        </p>
+        <div class="d-flex gap-2">
+            <a asp-controller="Produto" asp-action="Index" class="btn btn-primary btn-lg px-4 shadow-sm">
+                📦 Acessar Catálogo
+            </a>
+            <a asp-controller="Produto" asp-action="Criar" class="btn btn-outline-success btn-lg px-4">
+                ➕ Cadastrar Produto
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- CARDS DE INDICADORES (MÉTRICAS DO REPOSITÓRIO) -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-primary text-white h-100">
+            <div class="card-body p-4">
+                <span class="fs-6 text-white-50 text-uppercase fw-bold">Total de Itens Cadastrados</span>
+                <h2 class="display-5 fw-bold mt-2 mb-0">@ViewBag.TotalItens</h2>
+                <small class="text-white-50">Mercadorias registradas no SQLite</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-success text-white h-100">
+            <div class="card-body p-4">
+                <span class="fs-6 text-white-50 text-uppercase fw-bold">Patrimônio em Estoque</span>
+                <h2 class="display-5 fw-bold mt-2 mb-0">R$ @(((decimal)(ViewBag.ValorTotalEstoque ?? 0m)).ToString("N2"))</h2>
+                <small class="text-white-50">Cálculo: SUM(Preço * Estoque)</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-danger text-white h-100">
+            <div class="card-body p-4">
+                <span class="fs-6 text-white-50 text-uppercase fw-bold">Estoque Crítico</span>
+                <h2 class="display-5 fw-bold mt-2 mb-0">@ViewBag.ItensCriticos</h2>
+                <small class="text-white-50">Itens com saldo &lt;= 5 unidades</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LISTAGEM DE ALERTA RÁPIDO: PRODUTOS COM ESTOQUE BAIXO -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold text-dark">⚠️ Alertas de Reposição Imediata</h5>
+        <a asp-controller="Produto" asp-action="Index" asp-route-apenasCriticos="true" class="btn btn-sm btn-outline-danger">
+            Ver Todos os Críticos
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="p-4 text-center text-success">
+                ✅ Nenhum produto com estoque crítico no momento! Todos os itens estão com níveis adequados.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Preço Unitário</th>
+                            <th>Saldo em Estoque</th>
+                            <th class="text-end">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">@item.Nome</td>
+                                <td><span class="badge bg-secondary">@item.Categoria</span></td>
+                                <td>R$ @item.Preco.ToString("N2")</td>
+                                <td><span class="badge bg-danger">@item.Estoque unidades</span></td>
+                                <td class="text-end">
+                                    <a asp-controller="Produto" asp-action="Editar" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-warning">
+                                        Repor Estoque
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@model IEnumerable<LojaMvcDapper.Models.Produto>
+
+@{
+    ViewData["Title"] = "Catálogo de Produtos";
+}
+
+<!-- =========================================================================
+     CABEÇALHO DA PÁGINA COM AÇÕES PRINCIPAIS
+     ========================================================================= -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">Catálogo de Produtos</h2>
+        <p class="text-muted mb-0">Gerencie o estoque e os preços das mercadorias cadastradas.</p>
+    </div>
+    <div>
+        <a asp-action="Criar" class="btn btn-success shadow-sm">
+            <span class="me-1">➕</span> Cadastrar Novo Produto
+        </a>
+    </div>
+</div>
+
+<!-- =========================================================================
+     BARRA DE FILTRO E PESQUISA
+     Demonstração de requisição GET com parâmetros na URL
+     ========================================================================= -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body bg-white rounded">
+        <form asp-action="Index" method="get" class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-light">🔍</span>
+                    <input type="text" name="termoBusca" value="@ViewBag.TermoBusca" 
+                           class="form-control" placeholder="Buscar por nome do produto ou categoria..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+            <div class="col-md-3">
+                <a asp-action="Index" class="btn btn-outline-secondary w-100">Limpar Filtros</a>
+            </div>
+        </form>
+
+        @if (ViewBag.FiltroAtivo != null)
+        {
+            <div class="mt-2 text-primary small fw-bold">
+                Filtro ativo: @ViewBag.FiltroAtivo
+            </div>
+        }
+    </div>
+</div>
+
+<!-- =========================================================================
+     TABELA DE PRODUTOS CADASTRADOS (RENDERIZAÇÃO DINÂMICA COM RAZOR)
+     ========================================================================= -->
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <p class="text-muted fs-5 mb-3">Nenhum produto foi encontrado no momento.</p>
+                <a asp-action="Criar" class="btn btn-primary btn-sm">Cadastre o primeiro produto agora</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" style="width: 70px;">#Id</th>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Preço Unitário</th>
+                            <th scope="col">Estoque</th>
+                            <th scope="col">Total em Estoque</th>
+                            <th scope="col" class="text-center" style="width: 200px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-muted">@item.Id</td>
+                                <td>
+                                    <div class="fw-bold text-dark">@item.Nome</div>
+                                    <small class="text-muted">Cadastrado em: @item.DataCadastro.ToString("dd/MM/yyyy HH:mm")</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.Categoria</span>
+                                </td>
+                                <td class="fw-bold text-success">
+                                    R$ @item.Preco.ToString("N2")
+                                </td>
+                                <td>
+                                    @if (item.EstoqueCritico)
+                                    {
+                                        <span class="badge bg-danger">@item.Estoque un (Crítico!)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary">@item.Estoque un</span>
+                                    }
+                                </td>
+                                <td class="fw-semibold">
+                                    R$ @item.ValorTotalEmEstoque.ToString("N2")
+                                </td>
+                                <td class="text-center">
+                                    <!-- Tag Helpers com asp-route-id: Injeta o ID na URL dinamicamente -->
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Detalhes" asp-route-id="@item.Id" 
+                                           class="btn btn-outline-info" title="Visualizar Detalhes">
+                                            👁️
+                                        </a>
+                                        <a asp-action="Editar" asp-route-id="@item.Id" 
+                                           class="btn btn-outline-warning" title="Editar Produto">
+                                            ✏️
+                                        </a>
+                                        <a asp-action="Excluir" asp-route-id="@item.Id" 
+                                           class="btn btn-outline-danger" title="Excluir Produto">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,88 @@
+@model LojaMvcDapper.Models.Produto
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<!-- =========================================================================
+     TELA 3: VISUALIZAÇÃO DE DETALHES DO PRODUTO
+     Demonstração de leitura individual, propriedades computadas de POO e estilização
+     ========================================================================= -->
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                <h4 class="mb-0 fw-bold">📦 Detalhes do Produto #@Model.Id</h4>
+                <span class="badge bg-secondary fs-6">@Model.Categoria</span>
+            </div>
+
+            <div class="card-body p-4 bg-white">
+                <div class="mb-4">
+                    <h3 class="fw-bold text-dark mb-1">@Model.Nome</h3>
+                    <p class="text-muted small">Registrado no banco de dados em: @Model.DataCadastro.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <!-- CARD PREÇO -->
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border text-center">
+                            <span class="text-muted d-block small mb-1">Preço Unitário</span>
+                            <h4 class="fw-bold text-success mb-0">R$ @Model.Preco.ToString("N2")</h4>
+                        </div>
+                    </div>
+
+                    <!-- CARD ESTOQUE -->
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border text-center">
+                            <span class="text-muted d-block small mb-1">Saldo em Estoque</span>
+                            @if (Model.EstoqueCritico)
+                            {
+                                <h4 class="fw-bold text-danger mb-0">@Model.Estoque un <small class="fs-6">(Crítico)</small></h4>
+                            }
+                            else
+                            {
+                                <h4 class="fw-bold text-primary mb-0">@Model.Estoque un</h4>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- CARD VALOR TOTAL IMOBILIZADO -->
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded border text-center">
+                            <span class="text-muted d-block small mb-1">Patrimônio em Estoque</span>
+                            <h4 class="fw-bold text-dark mb-0">R$ @Model.ValorTotalEmEstoque.ToString("N2")</h4>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.EstoqueCritico)
+                {
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <span class="fs-4 me-2">⚠️</span>
+                        <div>
+                            <strong>Atenção ao Inventário:</strong> O estoque deste produto está abaixo do limite de segurança (&lt;= 5 unidades). Recomenda-se emissão de novo pedido de compra ao fornecedor.
+                        </div>
+                    </div>
+                }
+
+                <hr class="my-4" />
+
+                <!-- AÇÕES DE NAVEGAÇÃO -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        &larr; Voltar para a Listagem
+                    </a>
+                    <div>
+                        <a asp-action="Editar" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                            ✏️ Editar Produto
+                        </a>
+                        <a asp-action="Excluir" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            🗑️ Excluir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

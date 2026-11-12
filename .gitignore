@@ -1,0 +1,21 @@
+## Pastas de build e compilação do .NET
+[Bb]in/
+[Oo]bj/
+
+## Arquivos de Banco de Dados Local gerados em tempo de execução
+*.db
+*.db-shm
+*.db-wal
+
+## Configurações locais de IDE
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Arquivos temporários e logs
+*.log
+.DS_Store
+Thumbs.db
